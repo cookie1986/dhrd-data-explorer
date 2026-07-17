@@ -18,10 +18,10 @@ def load_regions():
     return gdf
 
 @st.cache_data
-def plot_reports_per_region():
+def plot_reports_per_region(incident_data):
     # Load incident data
-    data = load_data()
-    incident_data = data[1]
+    # data = load_data()
+    # incident_data = data[1]
 
     # Calculate counts per region
     region_counts = incident_data['region'].value_counts().reset_index()
@@ -32,20 +32,20 @@ def plot_reports_per_region():
     name_col = "ITL121NM"
     gdf_ew = gdf[~gdf[name_col].isin(["Scotland", "Northern Ireland"])].copy()
 
-    # # Standardise names to prevent mismatches
-    # name_fixes = {
-    #     "East":"East",
-    #     "North West":"North West (England)",
-    #     "East Midlands":"East Midlands (England)",
-    #     "North East":"North East (England)",
-    #     "Greater London":"London",
-    #     "South East":"South East (England)",
-    #     "South West":"South West (England)",
-    #     "Yorkshire and Humber":"Yorkshire and The Humber",
-    #     "West Midlands":"West Midlands (England)",
-    #     "Wales":"Wales"
-    # }
-    # region_counts['region'] = region_counts['region'].replace(name_fixes)
+    # Standardise names to prevent mismatches
+    name_fixes = {
+        "East":"East",
+        "North West":"North West (England)",
+        "East Midlands":"East Midlands (England)",
+        "North East":"North East (England)",
+        "Greater London":"London",
+        "South East":"South East (England)",
+        "South West":"South West (England)",
+        "Yorkshire and Humber":"Yorkshire and The Humber",
+        "West Midlands":"West Midlands (England)",
+        "Wales":"Wales"
+    }
+    region_counts['region'] = region_counts['region'].replace(name_fixes)
 
     # Merge ITL1 and region count data
     merged = gdf_ew.merge(region_counts, left_on=name_col, right_on="region", how="left")
@@ -72,10 +72,10 @@ def plot_reports_per_region():
 
 
 @st.cache_data
-def plot_regions_pie_chart():
-    # Load incident data
-    data = load_data()
-    incident_data = data[1]
+def plot_regions_pie_chart(incident_data):
+    # # Load incident data
+    # data = load_data()
+    # incident_data = data[1]
 
     # Calculate counts per region
     region_counts = incident_data['region'].value_counts().reset_index()

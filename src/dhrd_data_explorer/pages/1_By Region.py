@@ -12,12 +12,12 @@ st.set_page_config(
 )
 
 # Load data
-data = load_data()
+data = load_data(record_id='21108268')
 
 # Current version
 version = get_latest_version(record_id=21108268)
 
-st.markdown("# Overview")
+st.markdown("# DHRs by Region")
 
 col1, col2, col3 = st.columns(3)
 
@@ -33,7 +33,7 @@ with col1:
 with col2:
     st.metric(
         label="Total Reports in Dataset",
-        value=len(data[0]), # data[0] corresponds with the documents dataset
+        value=len(data["documents"]),
         delta=0,
         help=f"The total number of DHR reports in the current version ({version}) of the dataset.",
         border=True,
@@ -54,7 +54,7 @@ with col3:
 map_col, side_col = st.columns([2, 1])
 
 with map_col:
-    fig = plot_reports_per_region()
+    fig = plot_reports_per_region(incident_data=data["incidents"])
     event = st.plotly_chart(
         fig,
         use_container_width=True,
@@ -66,15 +66,14 @@ selected_region = None
 if event and event["selection"]["points"]:
     selected_region = event["selection"]["points"][0]["location"]
 
-
 if selected_region:
     st.caption("Click a region on the map to see its records.")
     st.subheader(f"Records in {selected_region}")
-    st.dataframe(region_filter(data[1], selected_region=selected_region))
+    st.dataframe(region_filter(data["incidents"], selected_region=selected_region))
 else:
     st.caption("Click a region on the map to see its records.")
     st.subheader(f"All records")
-    st.dataframe(region_filter(data[1], selected_region=None))
+    st.dataframe(region_filter(data["incidents"], selected_region=None))
 
 with side_col:
-    st.plotly_chart(plot_regions_pie_chart(), use_container_width=True)
+    st.plotly_chart(plot_regions_pie_chart(data["incidents"]), use_container_width=True)
