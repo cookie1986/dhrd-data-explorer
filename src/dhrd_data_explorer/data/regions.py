@@ -2,7 +2,6 @@ import requests
 import io
 import geopandas as gpd
 import plotly.express as px
-from data.load import load_data
 import streamlit as st
 
 def load_regions():
@@ -19,9 +18,6 @@ def load_regions():
 
 @st.cache_data
 def plot_reports_per_region(incident_data):
-    # Load incident data
-    # data = load_data()
-    # incident_data = data[1]
 
     # Calculate counts per region
     region_counts = incident_data['region'].value_counts().reset_index()
@@ -73,9 +69,6 @@ def plot_reports_per_region(incident_data):
 
 @st.cache_data
 def plot_regions_pie_chart(incident_data):
-    # # Load incident data
-    # data = load_data()
-    # incident_data = data[1]
 
     # Calculate counts per region
     region_counts = incident_data['region'].value_counts().reset_index()

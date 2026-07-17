@@ -3,6 +3,7 @@ from datetime import date
 from data.load import load_data
 from data.version import get_latest_version
 from data.regions import plot_reports_per_region, plot_regions_pie_chart
+from data.csp import plot_csp_pie_chart
 from data.filters import region_filter
 
 st.set_page_config(
@@ -70,10 +71,14 @@ if selected_region:
     st.caption("Click a region on the map to see its records.")
     st.subheader(f"Records in {selected_region}")
     st.dataframe(region_filter(data["incidents"], selected_region=selected_region))
+
+    with side_col:
+        st.plotly_chart(plot_csp_pie_chart(data['incidents'], selected_region), use_container_width=True)
+
 else:
     st.caption("Click a region on the map to see its records.")
     st.subheader(f"All records")
     st.dataframe(region_filter(data["incidents"], selected_region=None))
 
-with side_col:
-    st.plotly_chart(plot_regions_pie_chart(data["incidents"]), use_container_width=True)
+    with side_col:
+        st.plotly_chart(plot_regions_pie_chart(data["incidents"]), use_container_width=True)
