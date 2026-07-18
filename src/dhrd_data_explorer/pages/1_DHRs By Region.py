@@ -7,7 +7,7 @@ from data.csp import plot_csp_pie_chart
 from data.filters import region_filter
 
 st.set_page_config(
-    page_title="Corpus Overview",
+    page_title="DHRs by Region",
     layout="wide"
     # page_icon=""
 )

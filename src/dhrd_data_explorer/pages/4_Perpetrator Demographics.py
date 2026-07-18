@@ -4,14 +4,12 @@ import plotly.express as px
 from data.load import load_data
 
 st.set_page_config(
-    page_title="DHRD - Incidents",
+    page_title="DHRD - Perpetrators",
     layout="wide"
+    # page_icon=""
 )
 
 SPECIAL_COLUMN_LABELS = {
-    "multiple_victims": "Multiple Victims",
-    "dhr_id": "DHR ID",
-    "date_of_incident": "Date of Incident",
 }
 
 def get_label(col_name):
@@ -19,7 +17,7 @@ def get_label(col_name):
 
 # Load data
 data = load_data(record_id='21108268')
-df = data["incidents"]
+df = data["perpetrators"]
 
 # Sidebar filters
 with st.sidebar:
@@ -72,13 +70,15 @@ with st.sidebar:
                 if selected:
                     filtered_df = filtered_df[filtered_df[col].isin(selected)]
 
+
 # Main page content
-st.markdown("# DHR Case Characteristics")
+st.title("Perpetrator Demographics")
 
 st.dataframe(
     filtered_df,
     hide_index=True
 )
+
 
 # Chart builder
 st.markdown("## Build a chart")
@@ -86,7 +86,7 @@ st.markdown("## Build a chart")
 # Classify columns
 numeric_cols = [c for c in filtered_df.columns if pd.api.types.is_numeric_dtype(filtered_df[c])]
 datetime_cols = [c for c in filtered_df.columns if pd.api.types.is_datetime64_any_dtype(filtered_df[c])]
-categorical_cols = [c for c in filtered_df.columns if c not in numeric_cols and c not in datetime_cols and c != 'incident_id']
+categorical_cols = [c for c in filtered_df.columns if c not in numeric_cols and c not in datetime_cols and c not in ['incident_id','perpetrator_id']]
 
 # Define what each chart type allows for X and Y
 CHART_RULES = {
