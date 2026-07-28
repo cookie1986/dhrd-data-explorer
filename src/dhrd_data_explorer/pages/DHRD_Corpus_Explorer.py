@@ -15,7 +15,7 @@ col1, col2, col3, col4, col5 = st.columns(5)
 with col1:
     st.link_button("✉️ Get Help", "mailto:darren.cook@citystgeorges.ac.uk", width="stretch")
 with col2:
-    st.link_button("🐞 Report a Bug", "mailto:darren.cook@citystgeorges.ac.uk?subject=Bug%20Report", width="stretch")
+    st.link_button("🐞 Report a Bug", "https://github.com/cookie1986/dhrd-data-explorer/issues", width="stretch")
 with col3:
     st.link_button("🐙 Source Code", "https://github.com/cookie1986/dhrd-data-explorer", width="stretch")
 with col4:
@@ -23,7 +23,15 @@ with col4:
 with col5:
     @st.dialog("About")
     def show_about():
-        st.write("The DHRD Project is....")
+        st.markdown(
+            """
+            This dashboard provides an accessible way to explore structured data extracted from Domestic
+            Homicide Review reports published through the UK Home Office library. It is designed to support
+            researchers, practitioners and policymakers by making patterns across cases easier to examine
+            than through individual reports alone. The dashboard draws on a versioned public dataset hosted
+            on Zenodo and includes information on reviews, incidents, victims and perpetrators. 
+            """
+            )
     if st.button("About", width="stretch"):
         show_about()
 
@@ -36,6 +44,10 @@ st.markdown(
     and policymakers the ability to explore DHRs publicly released by the UK 
     Home Office.
 
+    ### Provide Feedback...
+    We would really appreciate your feedback as we continue to develop the dashboard. 
+    If you would like to provide ideas for new features or suggestions for improvements,
+    please consider completing this short [feedback form](https://forms.gle/VDfto4TLpPvyTSB28)
     
     ### How to get started...
     Select from one of the options on the left-hand sidebar to explore the dataset: 
