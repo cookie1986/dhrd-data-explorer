@@ -6,7 +6,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from dhrd_data_explorer.data.download import download_zenodo_dataset
 
-DHRD_RECORD_ID = "10.5281/zenodo.21108268"
+DHRD_RECORD_ID = "10.5281/zenodo.21108267"
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)

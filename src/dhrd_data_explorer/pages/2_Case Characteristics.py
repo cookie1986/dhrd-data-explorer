@@ -18,7 +18,7 @@ def get_label(col_name):
     return SPECIAL_COLUMN_LABELS.get(col_name, col_name.replace("_", " ").title())
 
 # Load data
-data = load_data(record_id='21108268')
+data = load_data(record_id='21108267')
 df = data["incidents"]
 
 # Sidebar filters

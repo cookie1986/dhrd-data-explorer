@@ -13,10 +13,10 @@ st.set_page_config(
 )
 
 # Load data
-data = load_data(record_id='21108268')
+data = load_data(record_id='21108267')
 
 # Current version
-version = get_latest_version(record_id=21108268)
+version = get_latest_version(record_id=21108267)
 
 st.markdown("# DHRs by Region")
 

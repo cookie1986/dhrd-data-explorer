@@ -1,5 +1,6 @@
 import pandas as pd
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from zipfile import ZipFile
 import subprocess
 import streamlit as st
@@ -25,50 +26,97 @@ def find_file(directory: Path, filename: str) -> Path:
     return matches[0]
 
 
+# @st.cache_data
+# def load_data(record_id: str) -> dict[str, pd.DataFrame]:
+#     # File setup
+#     download_dir = Path("/tmp") / f"zenodo-{record_id}"
+#     extract_dir = download_dir / "extracted"
+
+#     download_dir.mkdir(parents=True, exist_ok=True)
+#     extract_dir.mkdir(parents=True, exist_ok=True)
+
+#     # API call
+#     subprocess.run(
+#         ["zenodo_get", record_id, "-o", str(download_dir)],
+#         check=True,
+#         capture_output=True,
+#         text=True
+#     )
+#     archives = list(download_dir.glob("*.zip"))
+#     print(archives)
+
+#     # Error handling
+#     if not archives:
+#         raise FileNotFoundError(
+#             f"No Zip file found in {download_dir}"
+#         )
+#     if len(archives) > 1:
+#         raise RuntimeError(
+#             f"Multiple Zip files found in {archives}"
+#         )
+    
+#     # Extract
+#     with ZipFile(archives[0]) as archive:
+#         archive.extractall(extract_dir)
+
+#     return {
+#         "documents": pd.read_csv(
+#             find_file(extract_dir, "documents.csv")
+#         ),
+#         "incidents": pd.read_csv(
+#             find_file(extract_dir, "incidents.csv")
+#         ),
+#         "victims": pd.read_csv(
+#             find_file(extract_dir, "victims.csv")
+#         ),
+#         "perpetrators": pd.read_csv(
+#             find_file(extract_dir, "perpetrators.csv")
+#         )
+#     }
+    
 @st.cache_data
 def load_data(record_id: str) -> dict[str, pd.DataFrame]:
-    # File setup
-    download_dir = Path("/tmp") / f"zenodo-{record_id}"
-    extract_dir = download_dir / "extracted"
+    with TemporaryDirectory(prefix="zenodo-") as temp_dir:
+        download_dir = Path(temp_dir)
+        extract_dir = download_dir / "extracted"
+        extract_dir.mkdir()
 
-    download_dir.mkdir(parents=True, exist_ok=True)
-    extract_dir.mkdir(parents=True, exist_ok=True)
-
-    # API call
-    subprocess.run(
-        ["zenodo_get", record_id, "-o", str(download_dir)],
-        check=True,
-        capture_output=True,
-        text=True
-    )
-    archives = list(download_dir.glob("*.zip"))
-
-    # Error handling
-    if not archives:
-        raise FileNotFoundError(
-            f"No Zip file found in {download_dir}"
+        subprocess.run(
+            ["zenodo_get", record_id, "-o", str(download_dir)],
+            check=True,
+            capture_output=True,
+            text=True,
         )
-    if len(archives) > 1:
-        raise RuntimeError(
-            f"Multiple Zip files found in {archives}"
-        )
-    
-    # Extract
-    with ZipFile(archives[0]) as archive:
-        archive.extractall(extract_dir)
 
-    return {
-        "documents": pd.read_csv(
-            find_file(extract_dir, "documents.csv")
-        ),
-        "incidents": pd.read_csv(
-            find_file(extract_dir, "incidents.csv")
-        ),
-        "victims": pd.read_csv(
-            find_file(extract_dir, "victims.csv")
-        ),
-        "perpetrators": pd.read_csv(
-            find_file(extract_dir, "perpetrators.csv")
-        )
-    }
-    
+        archives = list(download_dir.glob("*.zip"))
+
+        if not archives:
+            raise FileNotFoundError(
+                f"No ZIP file found in {download_dir}"
+            )
+
+        if len(archives) > 1:
+            raise RuntimeError(
+                f"Multiple ZIP files downloaded: "
+                f"{[archive.name for archive in archives]}"
+            )
+
+        with ZipFile(archives[0]) as archive:
+            archive.extractall(extract_dir)
+
+        data = {
+            "documents": pd.read_csv(
+                find_file(extract_dir, "documents.csv")
+            ),
+            "incidents": pd.read_csv(
+                find_file(extract_dir, "incidents.csv")
+            ),
+            "victims": pd.read_csv(
+                find_file(extract_dir, "victims.csv")
+            ),
+            "perpetrators": pd.read_csv(
+                find_file(extract_dir, "perpetrators.csv")
+            ),
+        }
+
+    return data
